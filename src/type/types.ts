@@ -20,7 +20,9 @@ export type ProductoConTamanos = {
 
 export type rellenosType = {
     id:number,
-    nombre:string
+    nombre:string,
+    especial:boolean,
+    valor:number
 };
 
 export type guadarPedidos = {
@@ -31,5 +33,7 @@ export type guadarPedidos = {
         fotoTorta: boolean,
         nombreFoto:string,
         precio:string,
-        detalle:string
+        detalle:string,
+        moldeRedondo:boolean,
+        rellenoEspecial:boolean
 }

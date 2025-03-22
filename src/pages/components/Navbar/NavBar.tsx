@@ -11,7 +11,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import { useEffect, useState } from 'react';
 
 import useThemeStore from '../../../store/useThemeStore';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
 
@@ -47,7 +47,9 @@ const NavBar = () => {
                     </IconButton>
 
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        Pedidos Luna
+                        <Link to="/" style={{textDecoration:'none', color:'White'}}>
+                            Pedidos Luna
+                        </Link> 
                     </Typography>
 
                     <MenuItem onClick={toggleMode}>

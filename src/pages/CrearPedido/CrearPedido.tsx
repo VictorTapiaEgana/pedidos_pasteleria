@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Box, Button, Checkbox, Chip, FormControl, FormControlLabel, Grid2, InputLabel, MenuItem, Select, TextField, Typography, SelectChangeEvent, Card, CardContent } from "@mui/material"
+import { Box, Button, Checkbox, Chip, FormControl, FormControlLabel, Grid2, InputLabel, MenuItem, Select, TextField, Typography, SelectChangeEvent, Card, CardContent, FormLabel, RadioGroup, Radio } from "@mui/material"
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -12,6 +12,10 @@ import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
+import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
+import CropDinIcon from '@mui/icons-material/CropDin';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 
 import { guadarPedidos, ProductoConTamanos, rellenosType } from "../../type/types";
 
@@ -27,14 +31,19 @@ const CrearPedido = () => {
     const [ prodSel, setProdSel ] = useState<string>('')
     const [ chipsProductos, setChipsProductos ] = useState<ProductoConTamanos>()
     const [ selTamano, setSelTamano ] = useState<number>(0)
+
     const [ rellenos, setRellenos ] = useState<rellenosType[]>([])
     const [ selRelleno , setSelRelleno ] = useState<string>('')
     const [ showRellenos, setshowRellenos ] = useState<boolean>(false)
+    const [ rellenoEspecial , setRellenoEspecial ] = useState<boolean>(false)
+    
     const [ fotoTorta, setFotoTorta ] = useState<boolean>(false)
     const [ detalles , setDetalles ] = useState<string>('')
     const [ productoPedido, setProductosPedido ] = useState<guadarPedidos[]>([])
     const [ nombreFoto, setNombreFoto ] = useState<string>('')
     const [ erroresForm, setErroresForm ] = useState<string[]>([])
+    const [ moldeRedondo, setMoldeRedondo ] = useState<boolean>(true)
+    const [ totalPedido, setTotalPedido ] = useState<number>(0)
 
     async function fetchRellenos(){
         const data = await getRellenos()
@@ -45,11 +54,33 @@ const CrearPedido = () => {
         const data = await getProductos()           
         setProductos(data)           
     }
+    
+    useEffect(() => {
+        
+        const tieneEspecial = rellenos?.filter(relle => relle.nombre === selRelleno)[0]?.especial;
+        setRellenoEspecial(tieneEspecial);
+        
+        // if (tieneEspecial){
+        //     setTotalPedido(prevTotal => prevTotal + 2000)
+        // }
+        
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selRelleno]);
+
+    
     useEffect(()=>{
         fetchProductos()                
         fetchRellenos()
+
+      
     },[])
+
+    // useEffect(()=>{
+
+    //     setTotalPedido(prevPedido =>(Number(prevPedido) + Number(detallePedido.precio)))
+
+    // },[productoPedido])
     
    
     const handleSelectChange = (event: SelectChangeEvent) => {
@@ -89,18 +120,34 @@ const CrearPedido = () => {
         }
 
         if (prod.length > 0 && prod[0].tipo === "Torta"){
+
             if(!selRelleno){
                 erroresTemp.push('Seleccione un relleno');
             }
+
         }
 
         if (erroresTemp.length >= 1) { 
-            setErroresForm([...erroresTemp])
-            // console.log(erroresTemp)
+
+            setErroresForm([...erroresTemp])            
             return 
-        }               
+
+        }          
+        
+               
         
         const precio = prod[0].tamanos.filter((tam)=> Number(tam.tamano) === Number(selTamano))    
+
+        
+        //Relleno especial
+        let Total = 0;
+        if (rellenoEspecial){
+            Total += 3000
+        }
+
+        if(fotoTorta){
+            Total+= 2000
+        }
 
         const detallePedido ={
                               fecha: selectDate ? selectDate.toISOString() : "", 
@@ -109,19 +156,48 @@ const CrearPedido = () => {
                               relleno:String(selRelleno) ,
                               fotoTorta:fotoTorta,
                               nombreFoto:nombreFoto,
-                              precio: String(precio[0].precio),
-                              detalle:String(detalles)
+                              precio: String( Number(precio[0].precio) + Total),
+                              detalle:String(detalles),
+                              moldeRedondo:moldeRedondo,
+                              rellenoEspecial:rellenoEspecial
         }
     
         setProductosPedido(prevProductoPedido => [...prevProductoPedido , detallePedido])
+
+        
+        
+        setTotalPedido(prevPedido =>(Number(prevPedido) + Number(detallePedido.precio)))       
+
 
         LimpiarEstados()        
     }
 
     const handleClickDelete = (id_delete:number) =>{
 
-        const newArray = productoPedido.filter((_prod,index) => index !== id_delete)
+        const newArray = productoPedido.filter((_prod,index) => index !== id_delete)        
         setProductosPedido(newArray)        
+        
+        //Re-Calcular Total
+         let total = 0;
+
+        // newArray.forEach(prod =>{
+            
+            //Si lleva FotoTorto se le suma $2.000
+            // if(prod.fotoTorta){
+            //     total += 2000
+            // }
+
+            
+
+            // console.log(RellenoEspecial)
+
+            // total += Number(prod.precio)
+         
+    
+
+        // setTotalPedido(total)
+        LimpiarEstados()
+
     }
 
     const LimpiarEstados = () =>{
@@ -133,6 +209,7 @@ const CrearPedido = () => {
           setSelTamano(0)
           setNombreFoto('')
           setChipsProductos(undefined)
+          setshowRellenos(false)
 
     }
 
@@ -212,6 +289,35 @@ const CrearPedido = () => {
                     showRellenos && (
                       <Grid2  container spacing={2}>   
                             <Box sx={{ display:'flex', justifyContent:'center', alignItems:'center', flexDirection:'column'}}>
+
+                                <FormControl sx={{marginTop:'10px'}}>
+                                    <FormLabel id="demo-radio-buttons-group-label" sx={{textAlign:'center'}}>
+                                        Tipo molde
+                                    </FormLabel>
+
+                                    <RadioGroup
+                                        aria-labelledby="demo-radio-buttons-group-label"
+                                        defaultValue="Redondo"
+                                        name="radio-buttons-group"
+                                        sx={{ display:'flex', flexDirection:'row'}}
+                                    >
+                                        <FormControlLabel value="Redondo" 
+                                                           control={<Radio 
+                                                                         onChange={()=>setMoldeRedondo(true)}
+                                                            />}  
+                                                            label="Redondo"
+                                        />
+
+                                        <FormControlLabel value="Cuadrado" 
+                                                          control={<Radio 
+                                                                        onChange={()=>setMoldeRedondo(false)}
+                                                          />} 
+                                                          label="Cuadrado" 
+                                        />
+
+                                    </RadioGroup>
+                                </FormControl>
+
                                 <FormControl fullWidth>
 
                                         <InputLabel id="selectRelleno" sx={{top:'0px'}}>Rellenos</InputLabel>
@@ -222,13 +328,17 @@ const CrearPedido = () => {
                                             value={selRelleno}                                         
                                             onChange={(e)=>setSelRelleno(e.target.value)}                                        
                                             >
-                                                {rellenos && rellenos.map((relle) => (
-                                                    <MenuItem 
+                                                {rellenos && rellenos.map((relle) => (                                                    
+
+                                                    <MenuItem                                                       
                                                         key={relle.id}  
                                                         value={relle.nombre}  
-                                                        sx={{ justifyContent: 'space-between' }}
-                                                    >
-                                                        {relle.nombre} 
+                                                        sx={{ justifyContent: 'space-between',
+                                                               backgroundColor: relle.especial == true ? 'lightyellow' : 'transparent',
+                                                        }}
+                                                    >                                                     
+                                                    { relle.especial && '🌟 ' }
+                                                    { relle.nombre }
         
                                                     </MenuItem>
                                                 ))}
@@ -298,11 +408,11 @@ const CrearPedido = () => {
                 <Box>
                        {
                         productoPedido.length > 0 && productoPedido.map((ped,index)=>(
-                            <Card key={ ped.producto + index } sx={{ minWidth: 300 , marginTop:'15px'}} >
+                            <Card key={ ped.producto + index } sx={{ maxWidth:'300px' , marginTop:'15px'}} >
                                 <CardContent>                                   
                                     <Box sx={{display:'flex', justifyContent:'space-between'}}>
                                         <Typography variant="h5" component="div">
-                                            { ped.producto}
+                                            { ped.producto}                                           
                                         </Typography>
                                         <Button>
                                             <DeleteForeverOutlinedIcon onClick={()=>handleClickDelete(index)}/>
@@ -312,7 +422,10 @@ const CrearPedido = () => {
                                     {
                                        ped.relleno && (
                                         <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>
-                                            { ped.relleno}                                             
+
+                                                {ped.rellenoEspecial ? '🌟 ' : ''}
+                                                {ped.relleno}
+                                            
                                         </Typography>
                                        ) 
                                     }
@@ -321,22 +434,53 @@ const CrearPedido = () => {
                                         <GroupOutlinedIcon sx={{position:'relative',top:'5px'}}/> { ped.tamano}                                        
                                     </Box>
 
+                                    <Box sx={{display:'flex', 
+                                              justifyContent:'flex-start', 
+                                              gap:'5px',
+                                              marginBottom:'10px', 
+                                              color: 'text.secondary'
+                                            }}
+                                    >
+                                        {
+                                            ped.moldeRedondo 
+                                                            ? <> <PanoramaFishEyeIcon/> Redonda </>                                                                    
+                                                            : <> <CropDinIcon/> Cuadrada </>
+                                        }
+
+                                    </Box>
                                     {
                                         ped.fotoTorta && (
-                                            <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>                                        
-                                                { ped.fotoTorta && 'Con imagen de: ' } 
-                                                <br/>
-                                                "{ped.nombreFoto}"
-                                            </Typography>
+                                            <Box sx={{ display:'flex', 
+                                                       justifyContent:'flex-start', 
+                                                       gap:'5px',                                                
+                                                       color: 'text.secondary'
+                                              }}
+                                            >
+                                                <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>                                        
+                                                    <ImageOutlinedIcon sx={{position:'relative',top:'5px'}} /> {ped.nombreFoto}
+                                                </Typography>
+                                            </Box>
+                                        )
+                                    }
+                                    {
+                                        ped.detalle && (
+                                            <Box sx={{ display:'flex', 
+                                                       justifyContent:'flex-start', 
+                                                       gap:'5px',                                                    
+                                                       color: 'text.secondary'
+                                              }}
+                                      >
+                                                <Typography sx={{ color: 'text.secondary' }}>                                       
+                                                    <DescriptionOutlinedIcon sx={{position:'relative',top:'5px'}}/> { ped.detalle } 
+                                                </Typography> 
+                                            </Box>
                                         )
                                     }
 
-                                    <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>                                       
-                                        { ped.detalle }
-                                    </Typography> 
                                     <Box sx={{ display:'flex', justifyContent:'end', fontSize:'18px', fontWeight:'800'}}>
                                         { Number(ped.precio).toLocaleString("es-CL",{style:"currency", currency:"CLP"}) }
                                     </Box>
+                                    
 
                                 </CardContent>
                                 
@@ -353,7 +497,11 @@ const CrearPedido = () => {
                                 gap:'15px'
                             }}
                 >
-                      
+                      {
+                         totalPedido > 0 && (
+                            <h2 style={{fontWeight:'800', fontSize:'20px'}}> { Number(totalPedido).toLocaleString('es-CL',{style:'currency',currency:"CLP"}) }</h2>
+                         )
+                      }
                       <Button variant="contained" sx={{marginBottom:'20px', display:'flex',gap:'8px', width:'250px'}}>
                           Finalizar Pedido 
                           <CheckBoxOutlinedIcon/>
@@ -368,4 +516,3 @@ const CrearPedido = () => {
 }
 
 export default CrearPedido
-
