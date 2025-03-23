@@ -26,14 +26,25 @@ export type rellenosType = {
 };
 
 export type guadarPedidos = {
-        fecha:string,
-        producto:string,
-        tamano:number,
-        relleno:string,
-        fotoTorta: boolean,
-        nombreFoto:string,
-        precio:string,
-        detalle:string,
-        moldeRedondo:boolean,
-        rellenoEspecial:boolean
-}
+    fecha:Date,
+    producto:string,
+    tamano:number,
+    relleno:string,
+    fotoTorta: boolean,
+    nombreFoto:string,
+    precio:string,
+    detalle:string,
+    moldeRedondo:boolean,
+    rellenoEspecial:boolean
+};
+
+export type finalizarPedido = {
+    nombre:string,
+    telefono:string,
+    horario:string,
+    areparto:boolean,
+    direccion:string,
+    valorReparto:string,
+    abono:string,
+    total:string,    
+};

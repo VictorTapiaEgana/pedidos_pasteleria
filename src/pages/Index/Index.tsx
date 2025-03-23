@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Principal from '../Principal/Principal.js';
 import CrearPedido from '../CrearPedido/CrearPedido.js';
 import Layout from '../Layout.js';
+import FinalizarPedido from '../finalizarPedido.js';
 
 const Index = () => {
 
@@ -21,6 +22,10 @@ const Index = () => {
                     <Route path='/crearpedido' element={ <Layout>
                                                             <CrearPedido />
                                                         </Layout>}
+                    />
+                    <Route path='/finalizarpedido' element={ <Layout>
+                                                                <FinalizarPedido />
+                                                            </Layout>}
                     />
               </Routes>
          </BrowserRouter>

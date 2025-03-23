@@ -23,6 +23,8 @@ import getProductos from "../../functions/productos/getProductos";
 import getRellenos from "../../functions/productos/getRellenos";
 
 import './CrearPedido.css'
+import useCartStore from "../../store/useCartStore";
+import { useNavigate } from "react-router-dom";
 
 const CrearPedido = () => {
 
@@ -36,6 +38,9 @@ const CrearPedido = () => {
     const [ selRelleno , setSelRelleno ] = useState<string>('')
     const [ showRellenos, setshowRellenos ] = useState<boolean>(false)
     const [ rellenoEspecial , setRellenoEspecial ] = useState<boolean>(false)
+
+    const { setCarrito } = useCartStore()
+    const navigate = useNavigate()
     
     const [ fotoTorta, setFotoTorta ] = useState<boolean>(false)
     const [ detalles , setDetalles ] = useState<string>('')
@@ -162,12 +167,13 @@ const CrearPedido = () => {
                               rellenoEspecial:rellenoEspecial
         }
     
-        setProductosPedido(prevProductoPedido => [...prevProductoPedido , detallePedido])
+        setProductosPedido(prevProductoPedido => [...prevProductoPedido , detallePedido])              
+        setTotalPedido(prevPedido =>(Number(prevPedido) + Number(detallePedido.precio)))   
 
-        
-        
-        setTotalPedido(prevPedido =>(Number(prevPedido) + Number(detallePedido.precio)))       
-
+        const nuevoCarrito = [...productoPedido, detallePedido];
+        // Guardar en Zustand con el array actualizado
+        setCarrito(nuevoCarrito);
+    
 
         LimpiarEstados()        
     }
@@ -178,26 +184,21 @@ const CrearPedido = () => {
         setProductosPedido(newArray)        
         
         //Re-Calcular Total
-         let total = 0;
+        // let Total = 0;        
 
-        // newArray.forEach(prod =>{
-            
-            //Si lleva FotoTorto se le suma $2.000
-            // if(prod.fotoTorta){
-            //     total += 2000
-            // }
+        // const resp = newArray.forEach((ped)=>{
 
-            
+        //     Total += Number(ped.precio)        
 
-            // console.log(RellenoEspecial)
+        // })
 
-            // total += Number(prod.precio)
-         
-    
+        const newTtotal = newArray.reduce((count,ped)=> count + Number(ped.precio),0 )
 
-        // setTotalPedido(total)
+        setTotalPedido(Number(newTtotal))   
+
+        setCarrito(newArray)
+
         LimpiarEstados()
-
     }
 
     const LimpiarEstados = () =>{
@@ -334,7 +335,7 @@ const CrearPedido = () => {
                                                         key={relle.id}  
                                                         value={relle.nombre}  
                                                         sx={{ justifyContent: 'space-between',
-                                                               backgroundColor: relle.especial == true ? 'lightyellow' : 'transparent',
+                                                              backgroundColor: relle.especial == true ? 'lightyellow' : 'transparent',
                                                         }}
                                                     >                                                     
                                                     { relle.especial && '🌟 ' }
@@ -406,6 +407,14 @@ const CrearPedido = () => {
                 </Button>
 
                 <Box>
+                       {
+                            totalPedido > 0 && (
+                                <h2 style={{fontWeight:'800', fontSize:'20px', width:'300', textAlign:'center'}}> 
+                                    Total Pedido { Number(totalPedido).toLocaleString('es-CL',{style:'currency',currency:"CLP"}) }
+                                </h2>
+                             )
+                       }
+
                        {
                         productoPedido.length > 0 && productoPedido.map((ped,index)=>(
                             <Card key={ ped.producto + index } sx={{ maxWidth:'300px' , marginTop:'15px'}} >
@@ -479,8 +488,7 @@ const CrearPedido = () => {
 
                                     <Box sx={{ display:'flex', justifyContent:'end', fontSize:'18px', fontWeight:'800'}}>
                                         { Number(ped.precio).toLocaleString("es-CL",{style:"currency", currency:"CLP"}) }
-                                    </Box>
-                                    
+                                    </Box>                                    
 
                                 </CardContent>
                                 
@@ -497,12 +505,11 @@ const CrearPedido = () => {
                                 gap:'15px'
                             }}
                 >
-                      {
-                         totalPedido > 0 && (
-                            <h2 style={{fontWeight:'800', fontSize:'20px'}}> { Number(totalPedido).toLocaleString('es-CL',{style:'currency',currency:"CLP"}) }</h2>
-                         )
-                      }
-                      <Button variant="contained" sx={{marginBottom:'20px', display:'flex',gap:'8px', width:'250px'}}>
+                      
+                      <Button variant="contained" 
+                              sx={{marginBottom:'20px', display:'flex',gap:'8px', width:'250px'}}
+                              onClick={()=>navigate('/finalizarpedido')}
+                      >
                           Finalizar Pedido 
                           <CheckBoxOutlinedIcon/>
                       </Button>
