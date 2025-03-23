@@ -23,11 +23,19 @@ const NavBar = () => {
     setDark(mode === 'dark');
   },[mode])
 
-  const ListMenu = ['Crear Pedido'];
+  const ListMenu = ['Crear Pedido', 'Pedidos'];
 
-  const HandleClickCrearPedido = () =>{
+  const HandleClickCrearPedido = (indice:number) =>{
 
-    navigate('/crearpedido')
+      switch (indice) {
+        case 0:
+          navigate('/crearpedido')          
+          break;
+      
+        case 1:
+          navigate('/pedidos')
+          break;
+      }
     
   }
 
@@ -73,9 +81,11 @@ const NavBar = () => {
            {
             ListMenu.map((menu,index)=>[
                 <Chip key={index} 
-                      label={menu} 
-                      color='primary'
-                      onClick={HandleClickCrearPedido}  
+                      label={menu}
+                      variant='outlined' 
+                      color='primary'                      
+                      onClick={()=>HandleClickCrearPedido(index)}  
+                      sx={{marginRight:'10px'}}
                 /> 
             ])
            }             

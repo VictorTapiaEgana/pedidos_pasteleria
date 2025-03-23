@@ -60,15 +60,9 @@ const CrearPedido = () => {
         setProductos(data)           
     }
     
-    useEffect(() => {
-        
+    useEffect(() => {        
         const tieneEspecial = rellenos?.filter(relle => relle.nombre === selRelleno)[0]?.especial;
         setRellenoEspecial(tieneEspecial);
-        
-        // if (tieneEspecial){
-        //     setTotalPedido(prevTotal => prevTotal + 2000)
-        // }
-        
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selRelleno]);
@@ -77,16 +71,7 @@ const CrearPedido = () => {
     useEffect(()=>{
         fetchProductos()                
         fetchRellenos()
-
-      
-    },[])
-
-    // useEffect(()=>{
-
-    //     setTotalPedido(prevPedido =>(Number(prevPedido) + Number(detallePedido.precio)))
-
-    // },[productoPedido])
-    
+    },[])    
    
     const handleSelectChange = (event: SelectChangeEvent) => {
 
@@ -154,8 +139,8 @@ const CrearPedido = () => {
             Total+= 2000
         }
 
-        const detallePedido ={
-                              fecha: selectDate ? selectDate.toISOString() : "", 
+        const detallePedido ={                            
+                              fecha: selectDate ? selectDate.toDate() : new Date(),
                               producto:String(prodSel),
                               tamano:Number(selTamano),
                               relleno:String(selRelleno) ,
@@ -181,16 +166,7 @@ const CrearPedido = () => {
     const handleClickDelete = (id_delete:number) =>{
 
         const newArray = productoPedido.filter((_prod,index) => index !== id_delete)        
-        setProductosPedido(newArray)        
-        
-        //Re-Calcular Total
-        // let Total = 0;        
-
-        // const resp = newArray.forEach((ped)=>{
-
-        //     Total += Number(ped.precio)        
-
-        // })
+        setProductosPedido(newArray)               
 
         const newTtotal = newArray.reduce((count,ped)=> count + Number(ped.precio),0 )
 

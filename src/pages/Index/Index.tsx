@@ -5,6 +5,7 @@ import Principal from '../Principal/Principal.js';
 import CrearPedido from '../CrearPedido/CrearPedido.js';
 import Layout from '../Layout.js';
 import FinalizarPedido from '../finalizarPedido.js';
+import Pedidos from '../Pedidos/Pedidos.js';
 
 const Index = () => {
 
@@ -15,6 +16,7 @@ const Index = () => {
     <CssBaseline />
          <BrowserRouter>
               <Routes>
+               
                    <Route path='/'  element={ <Layout> 
                                                   <Principal/> 
                                              </Layout> } 
@@ -27,6 +29,12 @@ const Index = () => {
                                                                 <FinalizarPedido />
                                                             </Layout>}
                     />
+
+                    <Route path='/pedidos' element={<Layout>
+                                                       <Pedidos />
+                                                    </Layout>}
+                    />
+
               </Routes>
          </BrowserRouter>
     </ThemeProvider> 
