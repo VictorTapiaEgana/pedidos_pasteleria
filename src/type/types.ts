@@ -15,7 +15,9 @@ export type ProductoConTamanos = {
     id: number;
     tipo: string;
     nombre: string;
-    tamanos: { tamano: string; precio: string }[];
+    tamanos: { tamano: string; 
+               precio: string 
+             }[];
 };
 
 export type rellenosType = {
@@ -48,3 +50,25 @@ export type finalizarPedido = {
     abono:string,
     total:string,    
 };
+
+export type getPedido = {
+        fecha:Date,
+        cliente:string,
+        direccion:string,
+        horario:string,
+        domicilio:string,
+        pagado:string,
+        abono:number,
+        total:number,
+        valorReparto:boolean,
+        detalle_pedidos:{ id:number,
+                          id_pedido:number,
+                          nombre:string,
+                          tamano:string,
+                          rellenos:string,
+                          foto:boolean,
+                          detalles:string,
+                          imagen:string,
+                          moldeRedondo:boolean
+                        }[];
+}

@@ -122,12 +122,9 @@ const CrearPedido = () => {
             setErroresForm([...erroresTemp])            
             return 
 
-        }          
-        
-               
-        
+        }                              
+       
         const precio = prod[0].tamanos.filter((tam)=> Number(tam.tamano) === Number(selTamano))    
-
         
         //Relleno especial
         let Total = 0;
@@ -157,8 +154,7 @@ const CrearPedido = () => {
 
         const nuevoCarrito = [...productoPedido, detallePedido];
         // Guardar en Zustand con el array actualizado
-        setCarrito(nuevoCarrito);
-    
+        setCarrito(nuevoCarrito);    
 
         LimpiarEstados()        
     }

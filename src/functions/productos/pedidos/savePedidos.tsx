@@ -30,7 +30,7 @@ export default async function savePedidos ( pedido:guadarPedidos[], detallePedid
                                                                             foto: ped.fotoTorta,
                                                                             detalles: ped.detalle,
                                                                             imagen: ped.nombreFoto,
-                                                                            molde:ped.moldeRedondo
+                                                                            moldeRedondo:ped.moldeRedondo
                                   })
           );
   

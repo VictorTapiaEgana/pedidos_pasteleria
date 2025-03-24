@@ -1,0 +1,35 @@
+.fc {
+  border: 1px solid red !important; 
+  border-right: 1px solid red !important;
+  border-bottom: 1px solid red !important;  
+}
+
+.fc-scrollgrid, .fc-scrollgrid {
+   border-color: red !important; 
+}
+
+.fc-daygrid-day {
+  border: 1px solid red !important; 
+}
+
+.fc-col-header {
+  border-bottom: 2px solid red !important; 
+}
+
+.fc-col-header-cell {
+  border-right: 1px solid red !important; 
+}
+
+.fc-toolbar-title {
+  text-transform: capitalize; /* Convierte el título a mayúsculas */
+  font-weight: bold; /* Opcional: Hace el texto más grueso */
+  font-size: 1.5rem; /* Opcional: Aumenta el tamaño */
+}
+
+
+
+.fc-daygrid-day.fc-day-today {
+  background-color: #f53fbe5b !important; 
+  color: white !important; 
+  border: 2px solid #fa28a9 !important; 
+}
