@@ -1,11 +1,13 @@
 import useThemeStore from '../../store/useThemeStore';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Principal from '../Principal/Principal.js';
+
 import CrearPedido from '../CrearPedido/CrearPedido.js';
 import Layout from '../Layout.js';
 import FinalizarPedido from '../finalizarPedido.js';
 import Pedidos from '../Pedidos/Pedidos.js';
+import Login from '../Login/Login.js';
+import Principal from '../Principal/Principal.js';
 
 const Index = () => {
 
@@ -17,10 +19,12 @@ const Index = () => {
          <BrowserRouter>
               <Routes>
                
-                   <Route path='/'  element={ <Layout> 
-                                                  <Principal/> 
-                                             </Layout> } 
-                    />
+                   <Route path='/'  element={ <Login /> } />
+
+                   <Route path='/main' element={ <Layout>
+                                                    <Principal />
+                                                 </Layout>} />
+                    
                     <Route path='/crearpedido' element={ <Layout>
                                                             <CrearPedido />
                                                         </Layout>}

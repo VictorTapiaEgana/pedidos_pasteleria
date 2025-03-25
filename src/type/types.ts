@@ -118,3 +118,8 @@ export type CalendarDayProps = {
     moldeRedondo: boolean;
   }
   
+  export type Usuario = {
+     nombre:string;
+     contrasena:string
+
+  }

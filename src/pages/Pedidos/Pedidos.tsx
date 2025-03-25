@@ -3,10 +3,23 @@ import { useEffect, useState } from "react";
 import getPedidos from "../../functions/productos/pedidos/getPedidos";
 import { getPedido } from "../../type/types";
 import CalendarDay from "../components/CalendarDay/CalendarDay";
+import { useNavigate } from "react-router-dom";
+import useUser from "../../store/useUsers";
 
 const Pedidos = () => {
 
     const [ pedidos, setPedidos ] = useState<getPedido[]>([])
+
+    const navigate = useNavigate()    
+    
+    const { UsuarioStr } = useUser() as { UsuarioStr: boolean };    
+      
+     useEffect(()=>{
+        if(!UsuarioStr) { navigate('/') }
+        
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+     },[])
+
 
     async function fetchPedidos() {
 

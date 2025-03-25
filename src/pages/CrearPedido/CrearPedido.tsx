@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 
+
+
 import { Box, Button, Checkbox, Chip, FormControl, FormControlLabel, Grid2, InputLabel, MenuItem, Select, TextField, Typography, SelectChangeEvent, Card, CardContent, FormLabel, RadioGroup, Radio } from "@mui/material"
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from "dayjs";
+import utc from "dayjs/plugin/utc";
 import "dayjs/locale/es"; 
 
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
@@ -25,8 +28,11 @@ import getRellenos from "../../functions/productos/getRellenos";
 import './CrearPedido.css'
 import useCartStore from "../../store/useCartStore";
 import { useNavigate } from "react-router-dom";
+import useUser from "../../store/useUsers";
 
 const CrearPedido = () => {
+
+    dayjs.extend(utc);
 
     const [ selectDate, setSelectDate ] =useState<Dayjs | null>(dayjs());
     const [ productos, setProductos ] = useState<ProductoConTamanos[]>([])    
@@ -49,6 +55,18 @@ const CrearPedido = () => {
     const [ erroresForm, setErroresForm ] = useState<string[]>([])
     const [ moldeRedondo, setMoldeRedondo ] = useState<boolean>(true)
     const [ totalPedido, setTotalPedido ] = useState<number>(0)
+
+    
+    
+    const { UsuarioStr } = useUser() as { UsuarioStr: boolean };    
+      
+     useEffect(()=>{
+        if(!UsuarioStr) { navigate('/') }
+        
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+     },[])
+
+
 
     async function fetchRellenos(){
         const data = await getRellenos()
@@ -137,7 +155,13 @@ const CrearPedido = () => {
         }
 
         const detallePedido ={                            
-                              fecha: selectDate ? selectDate.toDate() : new Date(),
+                            // fecha: selectDate ? selectDate.toDate() : new Date(),
+                            // fecha: selectDate ? dayjs(selectDate).utc().toDate() : new Date(),
+                            // fecha: selectDate ? dayjs(selectDate).utc().toDate() : dayjs().utc().toDate(),
+                              fecha: selectDate 
+                              ? dayjs(selectDate).startOf("day").toDate()  
+                              : dayjs().startOf("day").toDate(),                              
+
                               producto:String(prodSel),
                               tamano:Number(selTamano),
                               relleno:String(selRelleno) ,
@@ -169,6 +193,8 @@ const CrearPedido = () => {
         setTotalPedido(Number(newTtotal))   
 
         setCarrito(newArray)
+        
+      
 
         LimpiarEstados()
     }

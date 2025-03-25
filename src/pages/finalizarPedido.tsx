@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import  Swal  from 'sweetalert2'
 import useCartStore from "../store/useCartStore";
 import { Box, Typography, FormControl, RadioGroup, FormControlLabel, Radio, TextField, Button } from "@mui/material";
 import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
@@ -29,6 +30,16 @@ const FinalizarPedido = () =>{
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
+
+        const mostrarAlerta = () => {
+            Swal.fire({
+                        title: "¡Éxito!",
+                        text: "Tu pedido ha sido creado correctamente.",
+                        icon: "success",
+                        confirmButtonText: "Aceptar",
+            });
+      };
+    
     
     
     const handleClickFinalizar = async () =>{
@@ -59,9 +70,11 @@ const FinalizarPedido = () =>{
         //Guardar los datos
 
         const resp = await savePedidos(Carrito,detallefinal)
+        mostrarAlerta()
+        
+        LimpiarCmapos()
 
-        console.log(resp)
-
+        return resp
 
     }
 
@@ -74,6 +87,21 @@ const FinalizarPedido = () =>{
 
         setTotalNuevo(newTotal)
         
+    }
+
+    const LimpiarCmapos = () =>{
+
+        setaReparto(false)   
+        setNombre('')
+        setTelefono('')
+        setHorario('')
+        setDireccion('')
+        setValorReparto('')
+        setErrorList([])
+        setTotal(0)
+        setAbono('')
+        setTotalNuevo(0)
+
     }
 
       return(
