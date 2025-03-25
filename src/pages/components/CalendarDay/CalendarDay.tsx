@@ -16,6 +16,7 @@ import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 import './CalendarDay.css'
 import { CalendarDayProps, CalendarEvent, DetalleProd} from "../../../type/types";
 import deletePedidi from "../../../functions/productos/pedidos/deletePedido";
+import Swal from "sweetalert2";
 
 
 
@@ -115,11 +116,31 @@ export default function CalendarDay({ listaPedidos,fetchPedidos }:CalendarDayPro
 
       const handleDelete = async(id_pedido:number) => {
 
-        const data = await deletePedidi(id_pedido) 
+        Swal.fire({
+                  title: "Quiere eliminar este pedido?",
+                  showDenyButton: true,
+                  showCancelButton: true,
+                  showConfirmButton:false,
+                  icon:"question",
+                  // confirmButtonText: "Elimiar",
+                  denyButtonText: `Eliminar`
+        }).then( async (result) => {
+          
+          if (result.isDenied) {
 
-        fetchPedidos()
+              const data = await deletePedidi(id_pedido) 
 
-        return data          
+              fetchPedidos()
+              
+              Swal.fire("Pedido Eliminado", "", "info");
+              
+              return data          
+                            
+          }
+        });
+
+
+        
 
 
 

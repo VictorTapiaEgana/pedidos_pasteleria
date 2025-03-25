@@ -51,7 +51,7 @@ const FinalizarPedido = () =>{
         if (!horario) { Errores.push ('Ingrese Horario')}
 
         if (Errores.length > 0) { 
-            console.log(Errores)
+            
             setErrorList(Errores)
             return 
         }

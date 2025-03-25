@@ -19,9 +19,9 @@ export default async function savePedidos ( pedido:guadarPedidos[], detallePedid
                                                 valorReparto:Number(detallePedido.valorReparto)
                                               })
                                         .select()        
-                                              console.log(data)
+          
           const ultimoID =  data?.[0]?.id     
-          console.log("Utimo_id : ", ultimoID)
+          
           
           const detallesPromesas = pedido.map((ped) =>
                                    supabase.from("detalle_pedidos").insert({
