@@ -1,4 +1,4 @@
-import { Box, Grid2 } from "@mui/material"
+import {  Grid2 } from "@mui/material"
 import { useEffect, useState } from "react";
 import getPedidos from "../../functions/productos/pedidos/getPedidos";
 import { getPedido } from "../../type/types";
@@ -27,7 +27,8 @@ const Pedidos = () => {
                                            alignItems:'end',
                                            margin:{xs:'0px 20px',sm:'0 50px',md:'0 100px'}}}>            
 
-            <CalendarDay listaPedidos = { pedidos } />
+            <CalendarDay listaPedidos = { pedidos }
+                         fetchPedidos = { fetchPedidos }    />
                     
         </Grid2>
 

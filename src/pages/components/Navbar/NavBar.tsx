@@ -2,8 +2,9 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
 import { Chip, MenuItem } from '@mui/material';
+
+import CakeOutlinedIcon from '@mui/icons-material/CakeOutlined';
 
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
@@ -44,16 +45,8 @@ const NavBar = () => {
             <AppBar position="static">
                 
                 <Toolbar>
-                    
-                    <IconButton size="large"
-                                edge="start"
-                                color="inherit"
-                                aria-label="menu"
-                                sx={{ mr: 2 }}
-                    >
-                        
-                    </IconButton>
-
+                       
+                    <CakeOutlinedIcon sx={{marginRight:'10px'}}/>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                         <Link to="/" style={{textDecoration:'none', color:'White'}}>
                             Pedidos Luna

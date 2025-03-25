@@ -7,10 +7,11 @@ export default async function getPedidos():Promise<getPedido[]>{
            
         const { data } = await supabase.from('pedidos')
                                         .select (`
-                                                    fecha, cliente, direccion, horario, domicilio, pagado, abono, total, valorReparto,                                                        
-                                                    detalle_pedidos(id, id_pedido, nombre, tamano, rellenos, foto, detalles, imagen, moldeRedondo)
-                     
-                                                    `)     
+                                                  fecha, cliente, direccion, horario, domicilio, pagado, abono, total, valorReparto,telefono,                                                        
+                                                  detalle_pedidos(id, id_pedido, nombre, tamano, rellenos, foto, detalles, imagen, moldeRedondo )
+                                                `)     
+                                        .order('horario',{ascending:true})
+                                        
         if(!data) {
             return [];
         }

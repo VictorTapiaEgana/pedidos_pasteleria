@@ -1,7 +1,6 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import FullCalendar from "@fullcalendar/react";
-import { EventClickArg } from "@fullcalendar/core";  
 import { DateClickArg } from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from '@fullcalendar/interaction'
@@ -15,27 +14,73 @@ import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutl
 import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 
 import './CalendarDay.css'
-import { getPedido } from "../../../type/types";
+import { CalendarDayProps, CalendarEvent, DetalleProd, getPedido } from "../../../type/types";
+import deletePedidi from "../../../functions/productos/pedidos/deletePedido";
 
-export default function CalendarDay( listaPedidos:getPedido[] ) {
+
+
+export default function CalendarDay({ listaPedidos,fetchPedidos }:CalendarDayProps ) {
 
     const calendarRef =useRef<FullCalendar | null>(null);  
-    const [currentView, setCurrentView] = useState('dayGridMonth');  
- 
-      const handleEventClick = (info:EventClickArg) => {
+    const [ currentView, setCurrentView]  = useState('dayGridMonth');  
+    const [ eventList, setEventList ] = useState<CalendarEvent[]>([])
 
-            const eventId = info.event.extendedProps.id;
-            console.log("ID del evento:", eventId);
- 
-      };
+    useEffect(()=>{
 
+      const NewArray = listaPedidos.map((pedido,index)=>{
+  
+        const fechaBase = new Date(`${pedido.fecha}T00:00:00`);       
+      
+        const [hora, minutos] = pedido.horario.split(":").map(Number);
+        fechaBase.setHours(hora, minutos, 0, 0);
+
+        return {    
+                        id: index.toString(),
+                        title:pedido.cliente,
+                        start:fechaBase,
+                        end:fechaBase,
+                        allDay: false, 
+                        // backgroundColor: pedido.pagado === "Sí" ? "#28a745" : "#dc3545",
+                        extendedProps:{
+                                        domicilio:pedido.domicilio,  
+                                        direccion:pedido.direccion,
+                                        pagado:pedido.pagado,
+                                        abono:pedido.abono,
+                                        total:pedido.total,
+                                        valorReparto:pedido.valorReparto,
+                                        productos: pedido.detalle_pedidos.map((detalle) => ({
+                                                                                              id: detalle.id,
+                                                                                              id_pedido:detalle.id_pedido,
+                                                                                              nombre: detalle.nombre,
+                                                                                              tamano: detalle.tamano,
+                                                                                              rellenos: detalle.rellenos,
+                                                                                              foto: detalle.foto,
+                                                                                              detalles: detalle.detalles,
+                                                                                              imagen: detalle.imagen,
+                                                                                              moldeRedondo: detalle.moldeRedondo,
+                                        })),
+
+
+                        }
+
+        }
+
+      })
+
+      NewArray.sort((a, b) => a.start.getTime() - b.start.getTime()); 
+      
+
+      setEventList(NewArray)
+    
+    },[listaPedidos])
+ 
       const handleDateClick = (info: DateClickArg) => {    
         
         const calendarApi = calendarRef.current?.getApi();
 
             if (calendarApi) {
-              calendarApi.gotoDate(info.dateStr); 
-              calendarApi.changeView("dayGridDay"); 
+               calendarApi.gotoDate(info.dateStr); 
+               calendarApi.changeView("dayGridDay"); 
             }
     
             setCurrentView("dayGridDay"); 
@@ -59,8 +104,7 @@ export default function CalendarDay( listaPedidos:getPedido[] ) {
           const calendarApi = calendarRef.current.getApi();
           calendarApi.next();
         }
-      };
-    
+      };    
      
       const handlePrevMonth = () => {
         if (calendarRef.current) {
@@ -69,6 +113,17 @@ export default function CalendarDay( listaPedidos:getPedido[] ) {
         }
       };
 
+      const handleDelete = async(id_pedido:number) => {
+
+        const data = await deletePedidi(id_pedido) 
+
+        fetchPedidos()
+        
+        return data          
+
+
+
+      }
 
   return (    
 
@@ -98,9 +153,9 @@ export default function CalendarDay( listaPedidos:getPedido[] ) {
               </Box>
 
                 <FullCalendar
-                           ref={calendarRef}
-                           plugins={[dayGridPlugin, timeGridPlugin,interactionPlugin,listPlugin]} 
-                           initialView={currentView}
+                            ref={calendarRef}
+                            plugins={[dayGridPlugin, timeGridPlugin,interactionPlugin,listPlugin]} 
+                            initialView={currentView}
                             height="100%"
                             locale={esLocale} 
                             firstDay={1} 
@@ -110,42 +165,122 @@ export default function CalendarDay( listaPedidos:getPedido[] ) {
                                 end: ""
                             }}
                             
-                            events={[
-                                { 
-                                    title: "Evento 1", 
-                                    date: "2025-03-23", 
-                                    extendedProps: { id: "123", description: "Descripción del evento 1", location:"Ovalle" }
-                                  },
-                                  { 
-                                    title: "Evento 2", 
-                                    date: "2025-03-24", 
-                                    extendedProps: { id: "456", description: "Descripción del evento 2", location:"Coquimbo" }
-                                  },
-                                  { 
-                                    title: "Evento 3", 
-                                    date: "2025-03-23", 
-                                    extendedProps: { id: "789", description: "Descripción del evento 3", location:"Serena" }
-                                  },
-                            ]}
-
-                            eventClick={handleEventClick}                            
+                            events={eventList}                                              
                             dateClick={handleDateClick}       
                             
                             eventContent={(eventInfo) => {
+                              
                               const calendarApi = calendarRef.current?.getApi();
-                              const currentViewType = calendarApi?.view.type;
-                    
+                              const currentViewType = calendarApi?.view.type;                              
+
+                              const startDate = eventInfo.event.start;
+
+                              if (!startDate) {
+                                return
+                              }
+
+                              const horaInicio = new Date(startDate);
+                              
+                                  const horaInicioFormateada = horaInicio.toLocaleTimeString("es-CL", {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    hourCycle: "h23",
+                              });
+
                               return (
-                                <>
-                                  <strong>{eventInfo.event.title}</strong>
-                                  {currentViewType === "dayGridDay" && (
+                                <>                                
+                            
+                                  {currentViewType != "dayGridMonth" 
+                                    ? (
                                     <>
-                                      <p>{eventInfo.event.extendedProps.description}</p>
-                                      <p>{eventInfo.event.extendedProps.location}</p>
-                                    </>
-                                  )}
+                                        <span style={{fontWeight:'300', fontSize:'18px'}}>
+                                          {currentViewType === "dayGridDay" &&  horaInicioFormateada}                                        
+                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        </span>                                       
+                                        
+                                      
+
+                                        <br/>                                   
+                                       <Box sx={{display:'flex',justifyContent:'space-around',flexDirection:'column'}}>
+                                            <div style={{ }}>
+                                                <strong> 
+                                                  {eventInfo.event.title}
+                                                </strong>
+                                                  <button
+                                                        onClick={()=>handleDelete(eventInfo.event.extendedProps.productos[0].id_pedido)}
+                                                        style={{
+                                                                marginLeft: "8px",
+                                                                backgroundColor: "red",
+                                                                color: "white",
+                                                                border: "none",
+                                                                padding: "4px 6px",
+                                                                cursor: "pointer",
+                                                                borderRadius: "4px",
+                                                        }}>
+                                                        X
+                                                  </button>                                                  
+                                              </div>
+                                             {
+                                                eventInfo.event.extendedProps.domicilio 
+                                                ? <strong style={{fontWeight:'800',color:'blueviolet'}}>{eventInfo.event.extendedProps.direccion}</strong>
+                                                : <strong style={{fontWeight:'800',color:'blueviolet'}}>Retiro en local</strong>
+                                                  
+                                              }                                     
+                                              {/* <ul> */}
+                                                {
+                                                  eventInfo.event.extendedProps.productos.map((prod:DetalleProd,index:number)=>(
+                                                      
+                                                    <div key={prod.nombre + index} style={{display:'flex',flexWrap:'wrap',flexDirection:'column'}}>
+                                                        {/* <li> {prod.nombre} &nbsp;&nbsp;({ prod.tamano })</li>                                                    */}
+                                                        {prod.nombre} &nbsp;&nbsp;({ prod.tamano }) 
+                                                          <>
+                                                               <br/>
+                                                                {prod.rellenos && (
+                                                                  <>
+                                                                    &nbsp;&nbsp;- {prod.rellenos}
+                                                                    <br />
+                                                                  </>
+                                                                )}                                                    
+                                                              
+                                                                {prod.nombre.includes("Torta") && (
+                                                                  <>
+                                                                    &nbsp;&nbsp;- {prod.moldeRedondo ? "Molde Redondo" : "Molde Cuadrado"}
+                                                                    <br />
+                                                                  </>
+                                                                )}                                                                                              
+                                                                
+                                                                {prod.foto && (
+                                                                  <>
+                                                                      &nbsp;&nbsp;-  {prod.imagen}
+                                                                      <br/>
+                                                                  </>
+                                                                )
+                                                              }
+                                                              {
+                                                                prod.detalles && (
+                                                                  <div style={{display:'flex',flexWrap:'wrap',  wordBreak: "break-word",whiteSpace: "normal"}}>
+                                                                    &nbsp;&nbsp;- {prod.detalles}
+                                                                  </div >
+                                                                )
+                                                              }
+                                                          </>
+                                                    </div>
+
+                                                  ))
+                                                }
+                                              {/* </ul> */}
+                                       </Box>
+
+                                      
+                                    </> )
+                                    :(
+                                      <strong> {eventInfo.event.title}</strong>                                   
+                                    )
+                                  }
                                 </>
                               );
+
+                            
                             }}
 
                 />

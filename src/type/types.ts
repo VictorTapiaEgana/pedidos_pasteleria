@@ -56,11 +56,12 @@ export type getPedido = {
         cliente:string,
         direccion:string,
         horario:string,
-        domicilio:string,
+        domicilio:boolean,
         pagado:string,
         abono:number,
         total:number,
-        valorReparto:boolean,
+        valorReparto:number,
+        telefono:string,
         detalle_pedidos:{ id:number,
                           id_pedido:number,
                           nombre:string,
@@ -72,3 +73,48 @@ export type getPedido = {
                           moldeRedondo:boolean
                         }[];
 }
+
+export type CalendarDayProps = {
+    listaPedidos: getPedido[],
+    fetchPedidos:()=> void;
+
+  };
+
+  export type CalendarEvent = {
+      id: string;
+      title: string;
+      start: Date | string;
+      end?: Date | string;
+      allDay?: boolean;
+      backgroundColor?: string;
+      extendedProps: {
+      domicilio: boolean;
+      direccion: string;
+      pagado: string;
+      abono: number;
+      total: number;
+      valorReparto: number;
+      productos: {
+                id: number;
+                nombre: string;
+                tamano: string;
+                rellenos: string;
+                foto: boolean;
+                detalles: string;
+                imagen: string;
+                moldeRedondo: boolean;
+      }[];
+    };
+  };
+
+  export type DetalleProd= {
+    id: number;
+    nombre: string;
+    tamano: string;
+    rellenos: string;
+    foto: boolean;
+    detalles: string;
+    imagen: string;
+    moldeRedondo: boolean;
+  }
+  

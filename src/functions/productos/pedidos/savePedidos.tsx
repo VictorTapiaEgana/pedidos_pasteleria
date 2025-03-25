@@ -3,6 +3,7 @@ import { supabase } from "../../createConecction";
 
 export default async function savePedidos ( pedido:guadarPedidos[], detallePedido:finalizarPedido ) {
 
+  console.log(pedido)
       try {
           const { data } = await supabase.from('pedidos')
                                          .insert(
@@ -13,13 +14,14 @@ export default async function savePedidos ( pedido:guadarPedidos[], detallePedid
                                                 horario: detallePedido.horario ,
                                                 domicilio:detallePedido.areparto,
                                                 pagado:0,
-                                                abono:detallePedido.abono,
-                                                total:detallePedido.total, 
-                                                valorReparto:detallePedido.valorReparto
+                                                abono:Number(detallePedido.abono),
+                                                total:Number(detallePedido.total), 
+                                                valorReparto:Number(detallePedido.valorReparto)
                                               })
                                         .select()        
-      
+                                              console.log(data)
           const ultimoID =  data?.[0]?.id     
+          console.log("Utimo_id : ", ultimoID)
           
           const detallesPromesas = pedido.map((ped) =>
                                    supabase.from("detalle_pedidos").insert({
