@@ -14,7 +14,7 @@ import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutl
 import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 
 import './CalendarDay.css'
-import { CalendarDayProps, CalendarEvent, DetalleProd, getPedido } from "../../../type/types";
+import { CalendarDayProps, CalendarEvent, DetalleProd} from "../../../type/types";
 import deletePedidi from "../../../functions/productos/pedidos/deletePedido";
 
 
@@ -118,7 +118,7 @@ export default function CalendarDay({ listaPedidos,fetchPedidos }:CalendarDayPro
         const data = await deletePedidi(id_pedido) 
 
         fetchPedidos()
-        
+
         return data          
 
 
