@@ -121,8 +121,8 @@ const FinalizarPedido = () =>{
 
                 <TextField sx={{margin:'10px', width:'300px'}}     
                            value={horario} 
-                           onChange={(e)=>setHorario(e.target.value)}
-                           label='Horario entrega'/>
+                           type="time"
+                           onChange={(e)=>setHorario(e.target.value)}/>
 
                  <FormControl>
                     

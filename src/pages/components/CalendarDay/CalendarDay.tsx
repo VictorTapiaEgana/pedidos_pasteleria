@@ -24,7 +24,7 @@ export default function CalendarDay({ listaPedidos,fetchPedidos }:CalendarDayPro
 
     const calendarRef =useRef<FullCalendar | null>(null);  
     const [ currentView, setCurrentView]  = useState('dayGridMonth');  
-    const [ eventList, setEventList ] = useState<CalendarEvent[]>([])
+    const [ eventList, setEventList ] = useState<CalendarEvent[]>([])    
 
     useEffect(()=>{
 
@@ -68,9 +68,8 @@ export default function CalendarDay({ listaPedidos,fetchPedidos }:CalendarDayPro
 
       })
 
-      NewArray.sort((a, b) => a.start.getTime() - b.start.getTime()); 
+      NewArray.sort((a, b) => a.start.getTime() - b.start.getTime());      
       
-
       setEventList(NewArray)
     
     },[listaPedidos])
@@ -131,7 +130,7 @@ export default function CalendarDay({ listaPedidos,fetchPedidos }:CalendarDayPro
               const data = await deletePedidi(id_pedido) 
 
               fetchPedidos()
-              
+
               Swal.fire("Pedido Eliminado", "", "info");
               
               return data          
@@ -139,9 +138,15 @@ export default function CalendarDay({ listaPedidos,fetchPedidos }:CalendarDayPro
           }
         });
 
+      }
 
-        
+      const Validar = (valor:number) =>{
 
+        if(valor){
+            return Number(valor).toLocaleString('es-CL',{style:'currency',currency:'CLP'})
+        }else{
+            return 0
+        }
 
 
       }
@@ -216,7 +221,7 @@ export default function CalendarDay({ listaPedidos,fetchPedidos }:CalendarDayPro
                                     <>
                                         <span style={{fontWeight:'300', fontSize:'18px'}}>
                                           {currentViewType === "dayGridDay" &&  horaInicioFormateada}                                        
-                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         </span>                                       
                                         
                                       
@@ -246,8 +251,7 @@ export default function CalendarDay({ listaPedidos,fetchPedidos }:CalendarDayPro
                                                 ? <strong style={{fontWeight:'800',color:'blueviolet'}}>{eventInfo.event.extendedProps.direccion}</strong>
                                                 : <strong style={{fontWeight:'800',color:'blueviolet'}}>Retiro en local</strong>
                                                   
-                                              }                                     
-                                              {/* <ul> */}
+                                              }                                                                                   
                                                 {
                                                   eventInfo.event.extendedProps.productos.map((prod:DetalleProd,index:number)=>(
                                                       
@@ -283,13 +287,43 @@ export default function CalendarDay({ listaPedidos,fetchPedidos }:CalendarDayPro
                                                                     &nbsp;&nbsp;- {prod.detalles}
                                                                   </div >
                                                                 )
-                                                              }
+                                                              }                                                              
                                                           </>
                                                     </div>
+                                                    
 
                                                   ))
                                                 }
-                                              {/* </ul> */}
+                                                <div style={{ maxWidth: '100%', overflowX: 'auto' }}>
+                                                  <br/>
+                                                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>                                                        
+                                                          <tr>
+                                                            <th>Reparto</th>
+                                                            <th>Abono</th>
+                                                            <th>Total</th>
+                                                            <th>Deve</th>
+                                                          </tr>                                                        
+                                                        <tbody>
+                                                            <tr style={{textAlign:'center'}}>
+
+                                                              <td> { Validar(eventInfo.event.extendedProps.ValorReparto) } </td>
+                                                              <td> { Validar(eventInfo.event.extendedProps.abono) } </td>
+                                                              <td> {Validar(eventInfo.event.extendedProps.total)} </td>
+
+                                                              <td>
+                                                                {
+                                                                  (() => {
+                                                                    const total = Number(eventInfo.event.extendedProps.total) || 0;
+                                                                    const reparto = Number(eventInfo.event.extendedProps.ValorReparto) || 0;
+                                                                    const abono = Number(eventInfo.event.extendedProps.abono) || 0;
+                                                                    return (total - (reparto + abono)).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' });
+                                                                  })()
+                                                                }
+                                                              </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>                                           
+                                                  </div>     
                                        </Box>
 
                                       
