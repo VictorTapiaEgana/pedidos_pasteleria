@@ -296,14 +296,15 @@ export default function CalendarDay({ listaPedidos,fetchPedidos }:CalendarDayPro
                                                 }
                                                 <div style={{ maxWidth: '100%', overflowX: 'auto' }}>
                                                   <br/>
-                                                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>                                                        
+                                                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>  
+                                                    <tbody>                                                      
                                                           <tr>
                                                             <th>Reparto</th>
                                                             <th>Abono</th>
                                                             <th>Total</th>
                                                             <th>Deve</th>
                                                           </tr>                                                        
-                                                        <tbody>
+                                                      
                                                             <tr style={{textAlign:'center'}}>
 
                                                               <td> { Validar(eventInfo.event.extendedProps.ValorReparto) } </td>

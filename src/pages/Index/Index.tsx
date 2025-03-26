@@ -8,6 +8,7 @@ import FinalizarPedido from '../finalizarPedido.js';
 import Pedidos from '../Pedidos/Pedidos.js';
 import Login from '../Login/Login.js';
 import Principal from '../Principal/Principal.js';
+import Config from '../Config/Config.js';
 
 const Index = () => {
 
@@ -38,6 +39,11 @@ const Index = () => {
                                                        <Pedidos />
                                                     </Layout>}
                     />
+
+                    <Route path='/configuracion' element={ <Layout>
+                                                               <Config />
+                                                           </Layout>} />
+                                                           
 
               </Routes>
          </BrowserRouter>

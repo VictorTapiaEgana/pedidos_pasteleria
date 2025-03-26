@@ -1,0 +1,14 @@
+.listProductos{
+
+    margin:0;
+    padding: 0;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;    
+
+    > li{
+        list-style: none;
+        margin: 0 20px;
+    }
+}

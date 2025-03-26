@@ -123,3 +123,21 @@ export type CalendarDayProps = {
      contrasena:string
 
   }
+  export type NuevoProducto ={
+    tipo:string;
+    nombre:string;
+    tamano:string;
+    precio:string;    
+  }
+  export interface FormData {
+      nProducto: string;
+      tProdcuto: string;
+      taProducto: string;
+      pProducto: string;
+  }  
+  
+  export interface Tamano {
+      nombre: string;
+      valor: number;
+  }
+  

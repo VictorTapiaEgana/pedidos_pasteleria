@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import { Chip, MenuItem } from '@mui/material';
 
 import CakeOutlinedIcon from '@mui/icons-material/CakeOutlined';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
@@ -24,7 +25,7 @@ const NavBar = () => {
     setDark(mode === 'dark');
   },[mode])
 
-  const ListMenu = ['Crear Pedido', 'Pedidos'];
+  const ListMenu = ['Crear Pedido', 'Pedidos' ];
 
   const HandleClickCrearPedido = (indice:number) =>{
 
@@ -35,6 +36,9 @@ const NavBar = () => {
       
         case 1:
           navigate('/pedidos')
+          break;
+        case 2:
+          navigate('/configuracion')
           break;
       }
     
@@ -72,6 +76,7 @@ const NavBar = () => {
            }}
       >
            {
+            
             ListMenu.map((menu,index)=>[
                 <Chip key={index} 
                       label={menu}
@@ -80,8 +85,15 @@ const NavBar = () => {
                       onClick={()=>HandleClickCrearPedido(index)}  
                       sx={{marginRight:'10px'}}
                 /> 
-            ])
-           }             
+            ])            
+           }  
+           <Chip 
+                label= {<SettingsOutlinedIcon sx={{position:'relative',top:'2px'}} />}
+                variant='outlined' 
+                color='primary'                      
+                onClick={()=>HandleClickCrearPedido(2)}  
+                sx={{marginRight:'10px'}} />
+
       </Box>
 
     </Box>
