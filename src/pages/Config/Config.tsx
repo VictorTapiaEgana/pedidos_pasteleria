@@ -1,10 +1,8 @@
-import { Box, Button, Typography } from "@mui/material"
-import NavBar from "../components/Navbar/NavBar"
-
+import { Box, Button, Typography } from "@mui/material" 
 import './style.css'
 import { useState } from "react"
 import CrearProducto from "./CrearProducto/CrearProducto"
-import EliminarProducto from "./EliminarProducto/EliminarProducto"
+// import EliminarProducto from "./EliminarProducto/EliminarProducto"
 
 
 const Config = () => {
@@ -44,7 +42,7 @@ const Config = () => {
 
             <Box sx={{display:'flex',justifyContent:'center'}}>
                 { opcion === 'Crear' && <CrearProducto /> }
-                { opcion === 'Eliminar' && <EliminarProducto /> }
+                {/* { opcion === 'Eliminar' && <EliminarProducto /> } */}
             </Box>
 
         </Box>
