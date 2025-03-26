@@ -10,8 +10,8 @@ export default async function deletePedidi (id_pedido:number){
 
 
         data  = await supabase.from('pedidos')
-                                        .delete()
-                                        .eq('id', id_pedido)
+                              .delete()
+                              .eq('id', id_pedido)
 
         return data
         
