@@ -120,7 +120,15 @@ const CrearProducto = () => {
                                        sx={{width:'100px'}}
                                        error={ !!errors.taProducto }
                                        helperText={ errors.taProducto && String(errors.taProducto?.message) || ''}
-                                       {...register('taProducto')}                   
+                                       {...register('taProducto',{pattern: { 
+                                                                            value: /^[0-9]+$/, 
+                                                                            message: "Solo se permiten números"
+                                                                  }}
+                                        )}
+                                        onInput={(e) => {
+                                            const input = e.target as HTMLInputElement; 
+                                            input.value = input.value.replace(/\D/g, ""); 
+                                     }}
                             />
                               
                             <TextField  variant="outlined"
