@@ -6,6 +6,7 @@ import getProductos from "../../../functions/productos/getProductos"
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import Swal from "sweetalert2";
 import deleteProductos from "../../../functions/productos/deleteProductos";
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 
 
 const EliminarProducto = () => {
@@ -76,7 +77,9 @@ const EliminarProducto = () => {
                                         }
 
                                     </td>
-                                    <td onClick={()=> handleEliminarProdcuto(prod.id)}>❌</td>
+                                    <td onClick={()=> handleEliminarProdcuto(prod.id)}>
+                                       <DeleteForeverOutlinedIcon color="error" sx={{cursor:'pointer'}}/>     
+                                    </td>
                                 </tr>
                             ))
                         }                    
